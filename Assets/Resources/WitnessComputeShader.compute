@@ -1,0 +1,53 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel KeyValues
+
+#define PI    3.141592653589793
+#define TWOPI 6.283185307179587
+
+int _Size;
+float _MinLogLum;
+float _MaxLogLum;
+TextureCube<half4> _Source;
+SamplerState MyLinearClampSampler;
+RWStructuredBuffer<uint> _KeyValues;
+
+RWTexture2D<float4> _Test;
+
+
+[numthreads(8, 8, 1)]
+void KeyValues(uint3 id : SV_DispatchThreadID)
+{
+	// Compute luminance value (log scale)
+	// Min value : -5.0
+	// Max value : 10.0
+
+	// Can simplify the sampling to a 2D sampling going into spherical coordinates
+	// Need to change numthreads to (8,8,1) and LuminanceWitness.cs modifications
+	float2 uv = id.xy / float2(_Size, _Size) * float2(TWOPI, PI);
+	float theta = uv.y;
+	float phi = uv.x;
+	float3 unit = float3(0, 0, 0);
+
+	unit.x = sin(phi) * sin(theta) * -1;
+	unit.y = cos(theta) * -1;
+	unit.z = cos(phi) * sin(theta) * -1;
+	unit *= float3(_Size, _Size, _Size);
+
+	half4 color = _Source.SampleLevel(MyLinearClampSampler, unit.xyz, 0);
+	
+	// Or use normalized cartesian coordinates but it takes a while
+	// as it processes a 3D sampling (256 * 256 * 256) for example !!!
+	//float3 unit = id.xyz / float3(_Size, _Size, _Size);
+	//unit = unit * 2.0 - float3(1.0, 1.0, 1.0);
+	//half4 color = _Source.SampleLevel(MyLinearClampSampler, unit.xyz, 0);
+		
+	float lum = (0.2126 * color.r) + (0.7152 * color.g) + (0.0722 * color.b);
+
+	float logLum = log(lum + 0.00001);
+	float normalizedLogLum = (logLum - _MinLogLum) / (_MaxLogLum - _MinLogLum);
+	uint lumIntEncode = (uint)(normalizedLogLum * pow(2, 10));
+
+	InterlockedMin(_KeyValues[0], lumIntEncode);
+	InterlockedMax(_KeyValues[1], lumIntEncode);
+	InterlockedAdd(_KeyValues[2], lumIntEncode);
+}
