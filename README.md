@@ -1,14 +1,14 @@
 # 3D-TMO
 
-Unity project of 3D-TMO: [Tone mapping High Dynamic 3D scenes with global lightness coherency]().
+Unity project of 3D-TMO: [Tone mapping High Dynamic 3D scenes with global lightness coherency](https://igoude.github.io/).
 
-> "Tone mapping High Dynamic 3D scenes with global lightness coherency; I. Goudé, J. Lacoche, R. Cozot; Computer & Graphics (2020)"
+> "Tone mapping High Dynamic 3D scenes with global lightness coherency; I. Goudé, J. Lacoche, R. Cozot; Computer & Graphics (2020); https://doi.org/10.1016/j.cag.2020.08.004"
 
 ## Requirements
 
 Unity 2019.2.4f1  
 SteamVR (up to date)  
-This TMO has been developed using a HTC Vive pro HMD
+This TMO has been developed using an HTC Vive pro HMD
 
 ## Abstract
 
@@ -44,10 +44,7 @@ Comparison between Viewport TMO (left), Global TMO (right) and the combination o
 
 ## Contact
 
-> PERCEPT Team - IRISA Rennes <br />
-Email: percept@irisa.fr
-
 > Ific Goudé <br />
-PhD student <br />
-Team Percept - IRISA <br />
-Email: ific.goude@irisa.fr
+Research Scientist in Computer Graphics <br />
+Email: goude.ific@gmail.com <br />
+Website: [https://igoude.github.io/](https://igoude.github.io/)
